@@ -7,7 +7,7 @@ import java.util.function.Predicate;
  * Wrapper for handling responses
  *
  * @since 1.0.0
- * @author Shawn Dempsay {@literal <sdempsay@pavlovmedia.com>}
+ * @author Shawn Dempsay {@literal <shawn@dempsay.org>}
  */
 public record ExceptionalResponse<R>(R response, boolean wasError) {
     public Optional<R> safeResponse() {

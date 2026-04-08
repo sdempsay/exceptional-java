@@ -6,7 +6,7 @@ import java.util.Objects;
  * Utility class for executing functions
  *
  * @since 1.0.0
- * @author Shawn Dempsay {@literal <sdempsay@pavlovmedia.com>}
+ * @author Shawn Dempsay {@literal <shawn@dempsay.org>}
  */
 public final class ExceptionalFunction<T,R> {
     private final ExceptionalFunctionCall<T,R> exceptionalFunction;
