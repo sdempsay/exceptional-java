@@ -4,18 +4,44 @@
 
   <parent>
     <groupId>org.dempsay.maven</groupId>
-    <artifactId>maven-parent</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <artifactId>dempsay-parent</artifactId>
+    <version>1.0.2</version>
   </parent>
 
   <groupId>org.dempsay.utils</groupId>
   <artifactId>exceptional</artifactId>
-  <version>1.1.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
 
+  <name>Exeptional Java framework</name>
   <description>The exceptional error handling framework</description>
+  <url>https://github.com/sdempsay/exceptional-java</url>
+  <organization>
+    <name>Dempsay.org</name>
+    <url>http://www.dempsay.org</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>https://opensource.org/licenses/MIT</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <distributionManagement>
+    <site>
+      <id>maven-parent-site</id>
+      <url>${project.baseUri}</url>
+    </site>
+    <repository>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/sdempsay/maven-repository</url>
+    </repository>
+  </distributionManagement>
 
   <properties>
+    <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
     <junit.version>5.10.0</junit.version>
   </properties>
 
