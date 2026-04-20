@@ -10,7 +10,7 @@
 
   <groupId>org.dempsay.utils</groupId>
   <artifactId>exceptional</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <packaging>jar</packaging>
 
   <name>Exeptional Java framework</name>
