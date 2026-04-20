@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
  * Tests and samples against the ExceptionalAction
  *
  * @since 1.0.0
- * @author Shawn Dempsay {@literal <sdempsay@pavlovmedia.com>}
+ * @author Shawn Dempsay {@literal <shawn@dempsay.org>}
  */
 public class TestExceptionAction {
     @Test
