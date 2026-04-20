@@ -1,4 +1,4 @@
-package org.dempsay.utils.exceptional;
+package org.dempsay.utils.exceptional.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
