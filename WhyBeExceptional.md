@@ -150,6 +150,34 @@ if (response.wasNoError()) {
 return defaultValue();
 ```
 
+### 5. Resource Management with Try-With-Resources
+
+`ExceptionalResource` and `ExceptionalResourceAction` handle resources that implement `AutoCloseable` with proper try-with-resources semantics:
+
+```java
+// ExceptionalResource - returns a result
+ExceptionalResponse<String> response = ExceptionalResource.<MyResource, String>of(
+    () -> new MyResource(),              // Resource creation
+    resource -> resource.readFile()      // Resource usage
+).execute();
+
+if (response.wasNoError()) {
+    String content = response.response();
+}
+
+// ExceptionalResourceAction - returns boolean for success/failure
+boolean success = ExceptionalResourceAction.<MyResource>of(
+    () -> new MyResource(),
+    resource -> resource.process()       // Void operation
+).execute();
+
+if (success) {
+    // Resource was properly closed after action
+}
+```
+
+These classes ensure resources are always closed (even if exceptions occur) while providing the same exceptional handling patterns as the other Exceptional types.
+
 ## When to Use Exceptional
 
 | Scenario | Recommendation |
@@ -177,6 +205,23 @@ if (response.wasNoError()) {
 } else {
     fallback();
 }
+```
+
+For resources:
+
+```java
+// ExceptionalResource - wrap auto-closeable resources
+ExceptionalResource.<Resource, Result>of(
+    () -> new Resource(),
+    resource -> resource.doWork()
+).with(error -> logger.error("Resource error", error))
+ .execute();
+
+// ExceptionalResourceAction - for void operations
+ExceptionalResourceAction.of(
+    () -> new Resource(),
+    resource -> resource.doWork()
+).execute();
 ```
 
 The framework doesn't try to hide failures - it makes them explicit, manageable, and stream-friendly.
