@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.dempsay.maven</groupId>
     <artifactId>dempsay-parent</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
   </parent>
 
   <groupId>org.dempsay.utils</groupId>
@@ -14,17 +14,4 @@
   <packaging>jar</packaging>
 
   <description>The exceptional error handling framework</description>
-
-  <properties>
-    <junit.version>5.10.0</junit.version>
-  </properties>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 </project>
