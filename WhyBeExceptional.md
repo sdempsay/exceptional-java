@@ -8,7 +8,7 @@
 <dependency>
   <groupId>org.dempsay.utils</groupId>
   <artifactId>exceptional</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
 </dependency>
 ```
 
@@ -205,6 +205,29 @@ if (response.wasNoError()) {
 }
 return defaultValue();
 ```
+
+### 4.1 Consumer<Exception> Integration
+
+Since `ExceptionalListener` extends `Consumer<Exception>`, you can pass it directly to APIs that expect a `Consumer<Exception>`:
+
+```java
+import org.dempsay.utils.exceptional.api.ExceptionalListener;
+
+// External API that expects Consumer<Exception>
+void registerErrorHandler(Consumer<Exception> handler);
+
+// Pass ExceptionalListener directly - no wrapper needed
+registerErrorHandler(new ExceptionalListener() {
+    @Override
+    public void onError(Exception e) { logger.error(e); }
+});
+
+// Or pass to methods that need a Consumer<Exception>
+void processErrors(Consumer<Exception> consumer) { ... }
+processErrors(new ExceptionalListener() { ... });
+```
+
+This makes integrating with existing code that uses `Consumer<Exception>` patterns seamless.
 
 ### 5. Response Transformation with map()
 
