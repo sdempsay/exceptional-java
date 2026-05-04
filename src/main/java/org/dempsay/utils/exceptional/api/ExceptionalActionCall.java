@@ -8,5 +8,11 @@ package org.dempsay.utils.exceptional.api;
  */
 @FunctionalInterface
 public interface ExceptionalActionCall {
+    /**
+     * Performs an action or throws an exception.
+     *
+     * @throws Exception if an error occurs
+     * @since 1.0.0
+     */
     void action() throws Exception;
 }

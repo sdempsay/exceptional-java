@@ -8,5 +8,13 @@ package org.dempsay.utils.exceptional.api;
  */
 @FunctionalInterface
 public interface ExceptionalFunctionCall<T,R> {
+    /**
+     * Applies the function to the input or throws an exception.
+     *
+     * @param t the input
+     * @return the result
+     * @throws Exception if an error occurs
+     * @since 1.0.0
+     */
     R apply(T t) throws Exception;
 }
