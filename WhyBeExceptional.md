@@ -1,5 +1,38 @@
 # Why Exceptional? - A Case for Graceful Exception Handling
 
+## Quick Start
+
+### Add Dependency
+
+```xml
+<dependency>
+  <groupId>org.dempsay.utils</groupId>
+  <artifactId>exceptional</artifactId>
+  <version>1.0.3</version>
+</dependency>
+```
+
+### Import Statements
+
+```java
+import org.dempsay.utils.exceptional.api.ExceptionalSupplier;
+import org.dempsay.utils.exceptional.api.ExceptionalResponse;
+import org.dempsay.utils.exceptional.api.ExceptionalFunction;
+import org.dempsay.utils.exceptional.api.ExceptionalAction;
+import org.dempsay.utils.exceptional.api.ExceptionalResource;
+import org.dempsay.utils.exceptional.api.ExceptionalResourceAction;
+```
+
+### Basic Usage
+
+Use `ExceptionalSupplier.of()` with a lambda - no special interfaces needed:
+
+```java
+ExceptionalResponse<String> response = ExceptionalSupplier.of(() -> "Hello").execute();
+```
+
+The `.of()` method accepts any functional interface that throws `Exception`. For complex cases, use `ExceptionalSupplierCall<R>` explicitly if you need to pass the supplier as a parameter.
+
 ## The Problem with Exceptions in Java
 
 Java exceptions force a fundamental choice: handle them immediately with try-catch, or propagate them with throws. Both approaches have significant downsides, especially in modern Java code.
@@ -88,6 +121,9 @@ public Result processAll(List<Input> inputs) {
 `ExceptionalAction`, `ExceptionalSupplier`, and `ExceptionalFunction` all return `ExceptionalResponse`. A failure response makes it clear: this operation might have failed, and you should handle it explicitly.
 
 ```java
+import org.dempsay.utils.exceptional.api.ExceptionalSupplier;
+import org.dempsay.utils.exceptional.api.ExceptionalResponse;
+
 // Clear failure handling
 ExceptionalResponse<Result> response = ExceptionalSupplier.of(
     () -> process(input)
@@ -108,6 +144,10 @@ if (response.wasNoError()) {
 Exceptional wraps work naturally with streams:
 
 ```java
+import org.dempsay.utils.exceptional.api.ExceptionalSupplier;
+import org.dempsay.utils.exceptional.api.ExceptionalResponse;
+import java.util.stream.Collectors;
+
 List<Result> results = inputs.stream()
     .map(input -> ExceptionalSupplier.of(() -> processData(input)).execute())
     .filter(ExceptionalResponse::wasNoError)  // Filter to successes
@@ -126,6 +166,8 @@ Map<Boolean, List<Result>> grouped = inputs.stream()
 The core logic stays clean. Error handling is delegated:
 
 ```java
+import org.dempsay.utils.exceptional.api.ExceptionalSupplier;
+
 // Clean processing logic
 ExceptionalSupplier.of(() -> {
     Data data = fetchData(input);      // Network call
@@ -140,6 +182,9 @@ ExceptionalSupplier.of(() -> {
 Not all cases need error handling. You can use `ExceptionalSupplier` just to avoid throws declarations:
 
 ```java
+import org.dempsay.utils.exceptional.api.ExceptionalSupplier;
+import org.dempsay.utils.exceptional.api.ExceptionalResponse;
+
 // No error callback needed when you'll check the response
 ExceptionalResponse<String> response =
     ExceptionalSupplier.of(() -> potentiallyFailingCall()).execute();
@@ -150,11 +195,39 @@ if (response.wasNoError()) {
 return defaultValue();
 ```
 
-### 5. Resource Management with Try-With-Resources
+### 5. Response Transformation with map()
+
+The `map()` method on `ExceptionalResponse` transforms the value while staying in the `Optional` world. This is useful for chaining transformations without null checks:
+
+```java
+import org.dempsay.utils.exceptional.api.ExceptionalSupplier;
+import org.dempsay.utils.exceptional.api.ExceptionalResponse;
+import java.util.Optional;
+
+// Transform without explicit null check
+Optional<String> result = ExceptionalSupplier.of(() -> fetchUser(id))
+    .execute()
+    .map(user -> user.getName().toUpperCase());
+
+// Chain multiple transformations
+Optional<String> details = ExceptionalSupplier.of(() -> fetchOrder(id))
+    .execute()
+    .map(Order::getCustomer)
+    .map(Customer::getName)
+    .map(String::toUpperCase);
+```
+
+The `map()` method returns `Optional.empty()` automatically if there was an error, making it safe to use in stream pipelines.
+
+### 6. Resource Management with Try-With-Resources
 
 `ExceptionalResource` and `ExceptionalResourceAction` handle resources that implement `AutoCloseable` with proper try-with-resources semantics:
 
 ```java
+import org.dempsay.utils.exceptional.api.ExceptionalResource;
+import org.dempsay.utils.exceptional.api.ExceptionalResourceAction;
+import org.dempsay.utils.exceptional.api.ExceptionalResponse;
+
 // ExceptionalResource - returns a result
 ExceptionalResponse<String> response = ExceptionalResource.<MyResource, String>of(
     () -> new MyResource(),              // Resource creation
@@ -192,6 +265,9 @@ These classes ensure resources are always closed (even if exceptions occur) whil
 ## The Exceptional Pattern
 
 ```java
+import org.dempsay.utils.exceptional.api.ExceptionalSupplier;
+import org.dempsay.utils.exceptional.api.ExceptionalResponse;
+
 // 1. Wrap your code
 ExceptionalSupplier.of(() -> riskyOperation())
 
@@ -210,6 +286,9 @@ if (response.wasNoError()) {
 For resources:
 
 ```java
+import org.dempsay.utils.exceptional.api.ExceptionalResource;
+import org.dempsay.utils.exceptional.api.ExceptionalResourceAction;
+
 // ExceptionalResource - wrap auto-closeable resources
 ExceptionalResource.<Resource, Result>of(
     () -> new Resource(),
