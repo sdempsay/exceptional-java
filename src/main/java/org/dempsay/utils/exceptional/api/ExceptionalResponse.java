@@ -1,5 +1,6 @@
 package org.dempsay.utils.exceptional.api;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -25,6 +26,40 @@ public record ExceptionalResponse<R>(R response, boolean wasError) {
      */
     public <N> Optional<N> map(final Function<R,N> mapper) {
         return safeResponse().map(mapper);
+    }
+
+    /**
+     * Chains to another potentially-failing function.
+     * If this response had an error, returns failure without executing next.
+     * If successful, executes the next function with this response's value.
+     *
+     * @param next the function to execute if this response has no error
+     * @param exceptionalListener optional listener for errors in the next function
+     * @return new ExceptionalResponse with the result of next, or failure if any step failed
+     * @since 1.0.0
+     */
+    public <N> ExceptionalResponse<N> then(final ExceptionalFunctionCall<R,N> next, final ExceptionalListener exceptionalListener) {
+        if (this.wasError) {
+            return ExceptionalResponse.failure();
+        }
+
+        var nextCall = ExceptionalFunction.of(next);
+        if (Objects.nonNull(exceptionalListener)) {
+            nextCall.with(exceptionalListener);
+        }
+
+        return nextCall.execute(this.response);
+    }
+
+    /**
+     * Chains to another potentially-failing function without an error listener.
+     *
+     * @param next the function to execute if this response has no error
+     * @return new ExceptionalResponse with the result of next, or failure if any step failed
+     * @since 1.0.0
+     */
+    public <N> ExceptionalResponse<N> then(final ExceptionalFunctionCall<R,N> next) {
+        return then(next, null);
     }
 
     public boolean wasError() {

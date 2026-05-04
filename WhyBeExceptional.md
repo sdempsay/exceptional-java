@@ -219,7 +219,28 @@ Optional<String> details = ExceptionalSupplier.of(() -> fetchOrder(id))
 
 The `map()` method returns `Optional.empty()` automatically if there was an error, making it safe to use in stream pipelines.
 
-### 6. Resource Management with Try-With-Resources
+### 6. Chaining Operations with then()
+
+The `then()` method chains to another potentially-failing operation, like a flatMap for ExceptionalResponse. If the current response has an error, it short-circuits to failure without executing the next function:
+
+```java
+import org.dempsay.utils.exceptional.api.ExceptionalSupplier;
+import org.dempsay.utils.exceptional.api.ExceptionalResponse;
+import org.dempsay.utils.exceptional.api.ExceptionalFunctionCall;
+
+// Chain multiple potentially-failing operations
+ExceptionalResponse<String> result = ExceptionalSupplier.of(() -> fetchUser(id))
+    .execute()
+    .then(user -> fetchUserProfile(user.getId()))  // returns ExceptionalResponse<Profile>
+    .then(profile -> enrichProfile(profile));     // returns ExceptionalResponse<EnrichedProfile>
+
+// With error listener
+result.then(next -> processData(next), error -> logger.error("Chain failed", error));
+```
+
+Use `then()` when you need to chain operations where each step might throw - the error propagates automatically through the chain.
+
+### 7. Resource Management with Try-With-Resources
 
 `ExceptionalResource` and `ExceptionalResourceAction` handle resources that implement `AutoCloseable` with proper try-with-resources semantics:
 
