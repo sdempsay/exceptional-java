@@ -1,5 +1,6 @@
 # Actions Log
 
+- 2026-05-04: Removed local checkstyle.xml - parent 1.0.4 provides checkstyle configuration
 - 2026-05-04: Added Javadoc to all API methods across all classes in the exceptional framework
 - 2026-05-04: Added `then()` method to `ExceptionalResponse` for chaining potentially-failing operations, with 5 unit tests, javadoc, and documentation
 - 2026-05-04: Added `map()` method to `ExceptionalResponse` for transforming response values, added unit tests, javadoc, and documentation in WhyBeExceptional.md
