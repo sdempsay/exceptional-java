@@ -206,6 +206,36 @@ if (response.wasNoError()) {
 return defaultValue();
 ```
 
+### 4.1 Consumer<Exception> Integration
+
+The error handler accepts both `ExceptionalListener` and `java.util.function.Consumer<Exception>`.
+Since `ExceptionalListener` extends `Consumer<Exception>`, you can use lambdas or method references that expect a `Consumer`:
+
+```java
+import org.dempsay.utils.exceptional.api.ExceptionalSupplier;
+import java.util.function.Consumer;
+
+// Using a lambda (most common)
+ExceptionalSupplier.of(() -> riskyCall())
+    .with(error -> logger.error("Failed", error))
+    .execute();
+
+// Using a method reference that accepts Consumer<Exception>
+Consumer<Exception> myErrorHandler = this::handleError;
+ExceptionalSupplier.of(() -> riskyCall())
+    .with(myErrorHandler)
+    .execute();
+
+// Or pass the listener to methods expecting Consumer<Exception>
+void logError(Consumer<Exception> handler) { ... }
+logError(new ExceptionalListener() {
+    @Override
+    public void onError(Exception e) { logger.error(e); }
+});
+```
+
+This makes integrating with existing code that uses `Consumer<Exception>` patterns seamless.
+
 ### 5. Response Transformation with map()
 
 The `map()` method on `ExceptionalResponse` transforms the value while staying in the `Optional` world. This is useful for chaining transformations without null checks:
