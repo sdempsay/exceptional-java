@@ -208,30 +208,23 @@ return defaultValue();
 
 ### 4.1 Consumer<Exception> Integration
 
-The error handler accepts both `ExceptionalListener` and `java.util.function.Consumer<Exception>`.
-Since `ExceptionalListener` extends `Consumer<Exception>`, you can use lambdas or method references that expect a `Consumer`:
+Since `ExceptionalListener` extends `Consumer<Exception>`, you can pass it directly to APIs that expect a `Consumer<Exception>`:
 
 ```java
-import org.dempsay.utils.exceptional.api.ExceptionalSupplier;
-import java.util.function.Consumer;
+import org.dempsay.utils.exceptional.api.ExceptionalListener;
 
-// Using a lambda (most common)
-ExceptionalSupplier.of(() -> riskyCall())
-    .with(error -> logger.error("Failed", error))
-    .execute();
+// External API that expects Consumer<Exception>
+void registerErrorHandler(Consumer<Exception> handler);
 
-// Using a method reference that accepts Consumer<Exception>
-Consumer<Exception> myErrorHandler = this::handleError;
-ExceptionalSupplier.of(() -> riskyCall())
-    .with(myErrorHandler)
-    .execute();
-
-// Or pass the listener to methods expecting Consumer<Exception>
-void logError(Consumer<Exception> handler) { ... }
-logError(new ExceptionalListener() {
+// Pass ExceptionalListener directly - no wrapper needed
+registerErrorHandler(new ExceptionalListener() {
     @Override
     public void onError(Exception e) { logger.error(e); }
 });
+
+// Or pass to methods that need a Consumer<Exception>
+void processErrors(Consumer<Exception> consumer) { ... }
+processErrors(new ExceptionalListener() { ... });
 ```
 
 This makes integrating with existing code that uses `Consumer<Exception>` patterns seamless.

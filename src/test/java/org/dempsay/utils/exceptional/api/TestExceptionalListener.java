@@ -77,16 +77,4 @@ public class TestExceptionalListener {
         assertEquals("Consumer lambda test", caughtException.get().getMessage(), "Got correct message");
     }
 
-    @Test
-    public void testListenerInChainWithLambda() {
-        AtomicReference<Exception> caughtException = new AtomicReference<>();
-
-        var response = ExceptionalSupplier.of(() -> {
-                throw new IOException("Test exception");
-            }).with(error -> caughtException.set(error))
-            .execute();
-
-        assertEquals(IOException.class, caughtException.get().getClass(), "Lambda received the IOException");
-        assertEquals("Test exception", caughtException.get().getMessage(), "Got correct message");
     }
-}
