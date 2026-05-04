@@ -72,7 +72,7 @@ And it returns an `ExceptionalResponse` that tells you cleanly whether it worked
 <dependency>
   <groupId>org.dempsay.utils</groupId>
   <artifactId>exceptional</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
 </dependency>
 ```
 
