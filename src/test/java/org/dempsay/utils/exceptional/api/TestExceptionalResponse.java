@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -101,5 +102,41 @@ public class TestExceptionalResponse {
 
         assertTrue(result.wasError());
         assertNull(result.response());
+    }
+
+    @Test
+    public void testStreamSuccess() {
+        var response = ExceptionalResponse.success("Hello");
+        List<String> list = response.stream().toList();
+
+        assertEquals(1, list.size());
+        assertEquals("Hello", list.get(0));
+    }
+
+    @Test
+    public void testStreamFailure() {
+        var response = ExceptionalResponse.<String>failure();
+        List<String> list = response.stream().toList();
+
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    public void testStreamWithNullResult() {
+        ExceptionalResponse<String> response = ExceptionalResponse.success(null);
+        List<String> list = response.stream().toList();
+
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    public void testStreamWithFlatMap() {
+        List<String> inputs = List.of("a", "b", "c");
+        List<String> results = inputs.stream()
+            .map(s -> ExceptionalResponse.<String>success(s.toUpperCase()).stream())
+            .flatMap(s -> s)
+            .toList();
+
+        assertEquals(List.of("A", "B", "C"), results);
     }
 }

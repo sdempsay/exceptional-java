@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * Wrapper for handling responses
@@ -117,5 +118,24 @@ public record ExceptionalResponse<R>(R response, boolean wasError) {
      */
     public static Predicate<ExceptionalResponse<?>> hasError() {
         return r -> r.wasError;
+    }
+
+    /**
+     * Returns the response as a Stream, suitable for use with Stream#flatMap.
+     * Returns an empty stream if there was an error or if response is null.
+     * This enables filtering out failures in stream pipelines:
+     *
+     * <pre>{@code
+     * List<Result> results = inputs.stream()
+     *     .map(input -> ExceptionalSupplier.of(() -> process(input)).execute())
+     *     .flatMap(ExceptionalResponse::stream)
+     *     .toList();
+     * }</pre>
+     *
+     * @return Stream containing the response if successful and non-null, otherwise empty
+     * @since 1.0.3
+     */
+    public Stream<R> stream() {
+        return safeResponse().map(Stream::of).orElseGet(Stream::empty);
     }
 }

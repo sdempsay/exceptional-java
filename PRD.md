@@ -89,6 +89,7 @@ Response wrapper that encapsulates success or failure.
 public record ExceptionalResponse<R>(R response, boolean wasError) {
     Optional<R> safeResponse();  // returns Optional.ofNullable(response)
     <N> Optional<N> map(Function<R,N> mapper);  // transforms response if no error
+    Stream<R> stream();          // returns Stream of response, empty on error/null
     <N> ExceptionalResponse<N> then(ExceptionalFunctionCall<R,N> next);  // chains to next function
     <N> ExceptionalResponse<N> then(ExceptionalFunctionCall<R,N> next, ExceptionalListener listener);  // chains with listener
     boolean wasError();          // returns wasError field
@@ -104,6 +105,7 @@ public record ExceptionalResponse<R>(R response, boolean wasError) {
 - `failure()`: Creates response with `null` and `wasError = true`
 - `safeResponse()`: Returns `Optional.ofNullable(response)` to safely access result
 - `map(mapper)`: Transforms the response value if no error occurred; returns `Optional.empty()` if there was an error or if response is null
+- `stream()`: Returns a Stream containing the response if successful and non-null, otherwise empty; useful with flatMap to filter errors
 - `then(next)`: Chains to another potentially-failing function; returns failure if this response had an error, otherwise executes next with this value
 - `then(next, listener)`: Same as above but with optional error listener for the next function
 - `wasNoError()`: Convenience method for `!wasError`

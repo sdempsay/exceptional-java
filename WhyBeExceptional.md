@@ -146,15 +146,26 @@ Exceptional wraps work naturally with streams:
 ```java
 import org.dempsay.utils.exceptional.api.ExceptionalSupplier;
 import org.dempsay.utils.exceptional.api.ExceptionalResponse;
-import java.util.stream.Collectors;
 
 List<Result> results = inputs.stream()
     .map(input -> ExceptionalSupplier.of(() -> processData(input)).execute())
     .filter(ExceptionalResponse::wasNoError)  // Filter to successes
     .map(ExceptionalResponse::response)
-    .collect(Collectors.toList());
+    .toList();
+```
 
-// Or collect both successes and failures
+The `stream()` method provides a cleaner alternative using `flatMap`:
+
+```java
+import org.dempsay.utils.exceptional.api.ExceptionalSupplier;
+import org.dempsay.utils.exceptional.api.ExceptionalResponse;
+
+List<Result> results = inputs.stream()
+    .map(input -> ExceptionalSupplier.of(() -> processData(input)).execute())
+    .flatMap(ExceptionalResponse::stream)  // filters out errors automatically
+    .toList();
+
+// Collect both successes and failures grouped by error status
 Map<Boolean, List<Result>> grouped = inputs.stream()
     .map(input -> ExceptionalSupplier.of(() -> processData(input)).execute())
     .collect(Collectors.groupingBy(ExceptionalResponse::wasError,
