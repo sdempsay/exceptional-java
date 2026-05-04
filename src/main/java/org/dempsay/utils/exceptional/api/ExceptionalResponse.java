@@ -28,7 +28,7 @@ public record ExceptionalResponse<R>(R response, boolean wasError) {
      *
      * @param mapper function to transform the response value
      * @return Optional containing the transformed value, or empty if failed
-     * @since 1.0.0
+     * @since 1.0.3
      */
     public <N> Optional<N> map(final Function<R,N> mapper) {
         return safeResponse().map(mapper);
@@ -42,7 +42,7 @@ public record ExceptionalResponse<R>(R response, boolean wasError) {
      * @param next the function to execute if this response has no error
      * @param exceptionalListener optional listener for errors in the next function
      * @return new ExceptionalResponse with the result of next, or failure if any step failed
-     * @since 1.0.0
+     * @since 1.0.3
      */
     public <N> ExceptionalResponse<N> then(final ExceptionalFunctionCall<R,N> next, final ExceptionalListener exceptionalListener) {
         if (this.wasError) {
@@ -62,7 +62,7 @@ public record ExceptionalResponse<R>(R response, boolean wasError) {
      *
      * @param next the function to execute if this response has no error
      * @return new ExceptionalResponse with the result of next, or failure if any step failed
-     * @since 1.0.0
+     * @since 1.0.3
      */
     public <N> ExceptionalResponse<N> then(final ExceptionalFunctionCall<R,N> next) {
         return then(next, null);
