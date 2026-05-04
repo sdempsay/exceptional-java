@@ -16,11 +16,25 @@ public final class ExceptionalFunction<T,R> {
         this.exceptionalFunction = exceptionalFunction;
     }
 
+    /**
+     * Sets an error listener to be called if an exception occurs during execution.
+     *
+     * @param exceptionalListener the listener to receive exceptions
+     * @return this instance for method chaining
+     * @since 1.0.0
+     */
     public ExceptionalFunction<T,R> with(final ExceptionalListener exceptionalListener) {
         this.exceptionalListener = exceptionalListener;
         return this;
     }
 
+    /**
+     * Executes the function with the given input, returning an ExceptionalResponse with the result or failure.
+     *
+     * @param input the input to pass to the function
+     * @return ExceptionalResponse.success(result) on success, ExceptionalResponse.failure() on exception
+     * @since 1.0.0
+     */
     @SuppressWarnings("checkstyle:illegalcatch")
     public ExceptionalResponse<R> execute(final T input) {
         try {
@@ -34,6 +48,13 @@ public final class ExceptionalFunction<T,R> {
         }
     }
 
+    /**
+     * Creates an ExceptionalFunction from an ExceptionalFunctionCall.
+     *
+     * @param exceptionalFunction the function to wrap
+     * @return new ExceptionalFunction instance
+     * @since 1.0.0
+     */
     public static <T,R> ExceptionalFunction<T,R> of(final ExceptionalFunctionCall<T,R> exceptionalFunction) {
         return new ExceptionalFunction<T,R>(exceptionalFunction);
     }

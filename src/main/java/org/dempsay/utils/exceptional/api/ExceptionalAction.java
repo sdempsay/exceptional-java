@@ -16,11 +16,24 @@ public final class ExceptionalAction {
         this.exceptionalAction = action;
     }
 
+    /**
+     * Sets an error listener to be called if an exception occurs during execution.
+     *
+     * @param exceptionalListener the listener to receive exceptions
+     * @return this instance for method chaining
+     * @since 1.0.0
+     */
     public ExceptionalAction with(final ExceptionalListener exceptionalListener) {
         this.exceptionalListener = exceptionalListener;
         return this;
     }
 
+    /**
+     * Executes the action, returning true on success or false if an exception occurred.
+     *
+     * @return true if the action completed successfully, false if an exception was thrown
+     * @since 1.0.0
+     */
     @SuppressWarnings("checkstyle:illegalcatch")
     public boolean execute() {
         try {
@@ -34,6 +47,13 @@ public final class ExceptionalAction {
         }
     }
 
+    /**
+     * Creates an ExceptionalAction from an ExceptionalActionCall.
+     *
+     * @param action the action to wrap
+     * @return new ExceptionalAction instance
+     * @since 1.0.0
+     */
     public static ExceptionalAction of(final ExceptionalActionCall action) {
         return new ExceptionalAction(action);
     }

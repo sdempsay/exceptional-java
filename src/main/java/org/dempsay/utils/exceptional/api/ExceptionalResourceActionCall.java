@@ -9,5 +9,12 @@ package org.dempsay.utils.exceptional.api;
  */
 @FunctionalInterface
 public interface ExceptionalResourceActionCall<T> {
+    /**
+     * Accepts the resource and performs an action, or throws an exception.
+     *
+     * @param t the resource
+     * @throws Exception if an error occurs
+     * @since 1.0.0
+     */
     void accept(T t) throws Exception;
 }

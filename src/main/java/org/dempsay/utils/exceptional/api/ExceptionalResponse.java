@@ -12,6 +12,12 @@ import java.util.function.Predicate;
  * @author Shawn Dempsay {@literal <shawn@dempsay.org>}
  */
 public record ExceptionalResponse<R>(R response, boolean wasError) {
+    /**
+     * Returns the response as an Optional, safely handling null responses.
+     *
+     * @return Optional.ofNullable(response)
+     * @since 1.0.0
+     */
     public Optional<R> safeResponse() {
         return Optional.ofNullable(response);
     }
@@ -62,22 +68,53 @@ public record ExceptionalResponse<R>(R response, boolean wasError) {
         return then(next, null);
     }
 
+    /**
+     * Returns true if an error occurred during execution.
+     *
+     * @return true if wasError is true
+     * @since 1.0.0
+     */
     public boolean wasError() {
         return hasError().test(this);
     }
 
+    /**
+     * Returns true if no error occurred during execution.
+     *
+     * @return true if wasError is false
+     * @since 1.0.0
+     */
     public boolean wasNoError() {
         return hasError().negate().test(this);
     }
 
+    /**
+     * Creates a successful response with the given result.
+     *
+     * @param result the successful result
+     * @return ExceptionalResponse with wasError = false
+     * @since 1.0.0
+     */
     public static <R> ExceptionalResponse<R> success(final R result) {
         return new ExceptionalResponse<R>(result, false);
     }
 
+    /**
+     * Creates a failure response.
+     *
+     * @return ExceptionalResponse with null response and wasError = true
+     * @since 1.0.0
+     */
     public static <R> ExceptionalResponse<R> failure() {
         return new ExceptionalResponse<R>(null, true);
     }
 
+    /**
+     * Returns a predicate that tests if an ExceptionalResponse has an error.
+     *
+     * @return Predicate that tests the wasError field
+     * @since 1.0.0
+     */
     public static Predicate<ExceptionalResponse<?>> hasError() {
         return r -> r.wasError;
     }
