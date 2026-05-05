@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.dempsay.utils.exceptional.api.ExceptionalResponse;
 import org.junit.jupiter.api.Test;
 
 /**
