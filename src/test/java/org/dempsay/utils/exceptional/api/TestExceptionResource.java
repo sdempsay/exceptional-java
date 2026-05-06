@@ -8,9 +8,6 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.dempsay.utils.exceptional.api.ExceptionalResource;
-import org.dempsay.utils.exceptional.api.ExceptionalResourceAction;
-import org.dempsay.utils.exceptional.api.ExceptionalResponse;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -43,10 +40,6 @@ public class TestExceptionResource {
                 throw new IOException("Close failed");
             }
             closed.set(true);
-        }
-
-        boolean isClosed() {
-            return closed.get();
         }
     }
 
