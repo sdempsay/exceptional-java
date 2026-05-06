@@ -1,2 +1,3 @@
 Import-Package: *
 Export-Package: org.dempsay.utils.exceptional.api
+Bundle-SymbolicName: org.dempsay.utils.exceptional.api
