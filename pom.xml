@@ -39,4 +39,27 @@
       <url>https://maven.pkg.github.com/sdempsay/maven-repository</url>
     </repository>
   </distributionManagement>
+
+  <properties>
+    <bnd-maven-plugin.version>6.3.1</bnd-maven-plugin.version>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-maven-plugin</artifactId>
+        <version>${bnd-maven-plugin.version}</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>bnd-process</id>
+            <goals>
+              <goal>bnd-process</goal>
+            </goals>  
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
