@@ -70,6 +70,76 @@ public record ExceptionalResponse<R>(R response, boolean wasError) {
     }
 
     /**
+     * Chains the response to a function call that returns an ExceptionalResponse
+     * versus wrapping an unsafe call. Useful in API contexts
+     * 
+     * @param <N> The next return type
+     * @param next the function to execute if this response has no error
+     * @param exceptionalListener optional listener for errors in the next function
+     * @return new ExceptionalResponse with the result of next, or failure if any step failed
+     * @since 1.0.7
+     */
+    public <N> ExceptionalResponse<N> chain(final ExceptionalChainCall<R,N> next, final ExceptionalListener exceptionalListener) {
+        return chain(exceptionalListener, next);
+    }
+
+    public <N> ExceptionalResponse<N> chain(final ExceptionalListener exceptionalListener, final ExceptionalChainCall<R,N> next) {
+        if (this.wasError) {
+            return ExceptionalResponse.failure();
+        }
+        return next.apply(exceptionalListener, this.response);
+    }
+
+    /**
+     * Chains the response to a function call that returns an ExceptionalResponse
+     * versus wrapping an unsafe call. Useful in API contexts
+     * 
+     * @param <N> The next return type
+     * @param next the function to execute if this response has no error
+     * @return new ExceptionalResponse with the result of next, or failure if any step failed
+     * @since 1.0.7
+     */
+    public <N> ExceptionalResponse<N> chain(final ExceptionalChainCall<R,N> next) {
+        return chain(next, null);
+    }
+
+    /**
+     * Chains the response to a function call that accepts an ExceptionalListener and returns 
+     * an ExceptionalResponseversus wrapping an unsafe call. Useful in API contexts
+     * 
+     * @param <N> The next return type
+     * @param next the function to execute if this response has no error
+     * @param exceptionalListener
+     * @return new ExceptionalResponse with the result of next, or failure if any step failed
+     * @since 1.0.7
+     */
+    public <N> ExceptionalResponse<N> chain(final ExceptionalListener exceptionalListener, final ExceptionalChainListenenerCall<R,N> next) {
+        if (this.wasError) {
+            return ExceptionalResponse.failure();
+        }
+        return next.apply(this.response, exceptionalListener);
+    }
+
+    /**
+     * Chains the response to a function call that accepts an ExceptionalListener and returns 
+     * an ExceptionalResponseversus wrapping an unsafe call. Useful in API contexts.<p>
+     * <strong>NOTE</strong>: This is an inverted call to handle updated API semantics
+     * 
+     * 
+     * @param <N> The next return type
+     * @param exceptionalListener
+     * @param next the function to execute if this response has no error
+     * @return new ExceptionalResponse with the result of next, or failure if any step failed
+     * @since 1.0.7
+     */
+    public <N> ExceptionalResponse<N> chain(final ExceptionalListener exceptionalListener, final ExceptionalChainListenenerInvertedCall<R,N> next) {
+        if (this.wasError) {
+            return ExceptionalResponse.failure();
+        }
+        return next.apply(exceptionalListener, this.response);
+    }
+
+    /**
      * Returns true if an error occurred during execution.
      *
      * @return true if wasError is true

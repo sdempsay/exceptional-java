@@ -14,6 +14,7 @@ public final class ExceptionalResource<T extends AutoCloseable, R> {
     private final ExceptionalSupplierCall<T> resourceSupplier;
     private final ExceptionalFunctionCall<T, R> resourceUsage;
     private ExceptionalListener exceptionalListener;
+    private Runnable always;
 
     private ExceptionalResource(final ExceptionalSupplierCall<T> resourceSupplier, 
                                 final ExceptionalFunctionCall<T, R> resourceUsage) {
@@ -34,6 +35,19 @@ public final class ExceptionalResource<T extends AutoCloseable, R> {
     }
 
     /**
+     * Has a runnable action that always gets called, if there was an error or not.
+     * this is similar to adding something to with, and doing a check for success
+     * 
+     * @param always
+     * @return this instance for method chaining
+     * @since 1.0.7
+     */
+    public ExceptionalResource<T, R> always(final Runnable always) {
+        this.always = always;
+        return this;
+    }
+    
+    /**
      * Executes the resource operation, returning an ExceptionalResponse with the result or failure.
      * The resource is automatically closed after use, even if an exception occurs.
      *
@@ -50,6 +64,10 @@ public final class ExceptionalResource<T extends AutoCloseable, R> {
                 this.exceptionalListener.onError(e);
             }
             return ExceptionalResponse.failure();
+        } finally {
+            if (Objects.nonNull(this.always)) {
+                this.always.run();
+            }
         }
     }
 

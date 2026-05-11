@@ -11,6 +11,7 @@ import java.util.Objects;
 public final class ExceptionalFunction<T,R> {
     private final ExceptionalFunctionCall<T,R> exceptionalFunction;
     private ExceptionalListener exceptionalListener;
+    private Runnable always;
 
     private ExceptionalFunction(final ExceptionalFunctionCall<T,R> exceptionalFunction) {
         this.exceptionalFunction = exceptionalFunction;
@@ -25,6 +26,19 @@ public final class ExceptionalFunction<T,R> {
      */
     public ExceptionalFunction<T,R> with(final ExceptionalListener exceptionalListener) {
         this.exceptionalListener = exceptionalListener;
+        return this;
+    }
+
+    /**
+     * Has a runnable action that always gets called, if there was an error or not.
+     * this is similar to adding something to with, and doing a check for success
+     * 
+     * @param always
+     * @return this instance for method chaining
+     * @since 1.0.7
+     */
+    public ExceptionalFunction<T,R> always(final Runnable always) {
+        this.always = always;
         return this;
     }
 
@@ -45,6 +59,10 @@ public final class ExceptionalFunction<T,R> {
                 exceptionalListener.onError(e);
             }
             return ExceptionalResponse.failure();
+        } finally {
+            if (Objects.nonNull(this.always)) {
+                this.always.run();
+            }
         }
     }
 

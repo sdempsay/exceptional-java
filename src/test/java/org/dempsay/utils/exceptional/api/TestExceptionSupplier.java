@@ -48,4 +48,39 @@ public class TestExceptionSupplier {
         assertTrue(caughtException.get() instanceof IllegalStateException, "Got an illegal state exception");
         assertEquals("Exception for the test", caughtException.get().getMessage(), "Got the correct message");
     }
+
+    @Test
+    public void testAlwaysOnSuccess() {
+        AtomicReference<Boolean> alwaysCalled = new AtomicReference<>(false);
+        var response = ExceptionalSupplier.of(() -> "Success")
+            .always(() -> alwaysCalled.set(true))
+            .execute();
+        assertTrue(response.wasNoError());
+        assertTrue(alwaysCalled.get(), "always() was called on success");
+    }
+
+    @Test
+    public void testAlwaysOnFailure() {
+        AtomicReference<Boolean> alwaysCalled = new AtomicReference<>(false);
+        var response = ExceptionalSupplier.of(() -> {
+                throw new IllegalStateException("Test failure");
+            })
+            .always(() -> alwaysCalled.set(true))
+            .execute();
+        assertTrue(response.wasError());
+        assertTrue(alwaysCalled.get(), "always() was called on failure");
+    }
+
+    @Test
+    public void testAlwaysWithWithOnSuccess() {
+        AtomicReference<Boolean> alwaysCalled = new AtomicReference<>(false);
+        AtomicReference<Exception> caught = new AtomicReference<>();
+        var response = ExceptionalSupplier.of(() -> "Success")
+            .with(caught::set)
+            .always(() -> alwaysCalled.set(true))
+            .execute();
+        assertTrue(response.wasNoError());
+        assertTrue(alwaysCalled.get());
+        assertNull(caught.get(), "No error was caught");
+    }
 }

@@ -140,7 +140,73 @@ boolean success = ExceptionalResourceAction.of(
 - Returns success/true if creation, usage, and closing succeed.
 - Returns failure/false if any stage throws an exception.
 - Optionally calls `ExceptionalListener.onError()` if an exception occurs at any stage.
-- Handles suppressed exceptions if both usage and closing fail, reporting the primary exception.
+- Handles suppressed exceptions if both usage and closing fail, reporting the primary exception
+
+### FR7: always() method
+Execute a Runnable that runs regardless of success or failure (guaranteed cleanup).
+
+**API:**
+```java
+ExceptionalSupplier.of(() -> { /* code */ })
+    .always(() -> { /* cleanup code */ })
+    .execute();
+```
+
+**Behavior:**
+- The always Runnable executes in a finally block
+- Available on: ExceptionalSupplier, ExceptionalFunction, ExceptionalAction, ExceptionalResource
+
+---
+
+### FR8: chain() method
+Chain from an ExceptionalResponse to another ExceptionalResponse (API-style chaining).
+
+**API:**
+```java
+ExceptionalResponse<N> chain(ExceptionalChainCall<R,N> next);
+ExceptionalResponse<N> chain(ExceptionalChainCall<R,N> next, ExceptionalListener listener);
+ExceptionalResponse<N> chain(ExceptionalListener listener, ExceptionalChainListenenerCall<R,N> next);
+```
+
+**Functional Interfaces (new):**
+```java
+@FunctionalInterface
+public interface ExceptionalChainCall<T,R> {
+    ExceptionalResponse<R> apply(ExceptionalListener l, T t);
+}
+
+@FunctionalInterface
+public interface ExceptionalChainListenenerCall<T,R> {
+    ExceptionalResponse<R> apply(T t, ExceptionalListener listener);
+}
+
+@FunctionalInterface
+public interface ExceptionalChainListenenerInvertedCall<T,R> {
+    ExceptionalResponse<R> apply(ExceptionalListener listener, T t);
+}
+```
+
+**Behavior:**
+- Short-circuits to failure if current response had an error
+- Enables chaining to API methods that return ExceptionalResponse directly
+- Supports varargs patterns by placing ExceptionalListener as first parameter
+
+---
+
+### FR9: ExceptionalListener First Parameter Pattern
+For chaining methods and API-style calls, ExceptionalListener is placed as the first parameter to enable varargs patterns.
+
+```java
+// Example: Listener first enables cleaner varargs usage
+public ExceptionalResponse<Integer> parseNumber(Exception... errors) {
+    ExceptionalListener listener = errors.length > 0 ? errors[0] : null;
+    return ExceptionalSupplier.of(() -> Integer.parseInt(input))
+        .with(listener)
+        .execute();
+}
+```
+
+---
 
 ## Non-Functional Requirements
 
