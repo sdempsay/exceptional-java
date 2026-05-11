@@ -1,6 +1,6 @@
 # Release Notes
 
-## Version 1.0.7 (Unreleased)
+## Version 1.0.7
 
 ### New Features
 - **always() method**: Added to all Exceptional classes (`ExceptionalSupplier`, `ExceptionalFunction`, `ExceptionalAction`, `ExceptionalResource`) - executes a Runnable in a finally block regardless of success or failure, useful for guaranteed cleanup
