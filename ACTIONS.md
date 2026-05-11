@@ -1,5 +1,8 @@
 # Actions Log
 
+- 2026-05-11: Added `always()` method to all Exceptional classes (`ExceptionalSupplier`, `ExceptionalFunction`, `ExceptionalAction`, `ExceptionalResource`) - runs a Runnable in finally block regardless of success/failure, added unit tests
+- 2026-05-11: Added `chain()` method to `ExceptionalResponse` for API-style chaining where each step returns ExceptionalResponse directly, added functional interfaces `ExceptionalChainCall`, `ExceptionalChainListenenerCall`, `ExceptionalChainListenenerInvertedCall`
+- 2026-05-11: Implemented ExceptionalListener first parameter pattern for chaining methods to enable varargs support in API methods
 - 2026-05-04: Added `stream()` method to `ExceptionalResponse` for stream-friendly filtering, with 4 unit tests, javadoc, and documentation using .toList()
 - 2026-05-04: Removed local checkstyle.xml - parent 1.0.4 provides checkstyle configuration
 - 2026-05-04: Added Javadoc to all API methods across all classes in the exceptional framework

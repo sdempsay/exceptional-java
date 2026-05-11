@@ -30,4 +30,17 @@ public interface ExceptionalListener extends Consumer<Exception> {
     default void accept(final Exception error) {
         this.onError(error);
     }
+
+    /**
+     * In legacy APIs we have a lot of calls that pass Consumer<Exception>. To help
+     * make this more readable as APIs are updated, we can use this simple wrapper call
+     * to help deveopers quickly update this functionality
+     * 
+     * @param onError
+     * @return a new {@link ExceptionalListener} that hands everything to onError
+     * @since 1.0.7
+     */
+    static ExceptionalListener wrap(final Consumer<Exception> onError) {
+        return onError::accept;
+    }
 }

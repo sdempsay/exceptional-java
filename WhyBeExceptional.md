@@ -8,7 +8,7 @@
 <dependency>
   <groupId>org.dempsay.utils</groupId>
   <artifactId>exceptional</artifactId>
-  <version>1.0.6</version>
+  <version>1.0.7</version>
 </dependency>
 ```
 
@@ -305,6 +305,64 @@ if (success) {
 ```
 
 These classes ensure resources are always closed (even if exceptions occur) while providing the same exceptional handling patterns as the other Exceptional types.
+
+### 8. Guaranteed Cleanup with always()
+
+The `always()` method registers a `Runnable` that executes regardless of whether the operation succeeded or failed. This is useful for cleanup, logging, or resource release:
+
+```java
+import org.dempsay.utils.exceptional.api.ExceptionalSupplier;
+import org.dempsay.utils.exceptional.api.ExceptionalResponse;
+
+boolean[] completed = {false};
+ExceptionalResponse<String> response = ExceptionalSupplier.of(() -> riskyOperation())
+    .always(() -> completed[0] = true)  // Always runs - success or failure
+    .execute();
+
+// Response may have failed, but always() ran
+assert completed[0];
+```
+
+The `always()` method is available on `ExceptionalSupplier`, `ExceptionalFunction`, `ExceptionalAction`, and `ExceptionalResource`.
+
+### 9. API-Style Chaining with chain()
+
+The `chain()` method enables chaining from an `ExceptionalResponse<R>` to another `ExceptionalResponse<N>` where each step in the chain returns an `ExceptionalResponse` directly (rather than wrapping a throwing function). This is useful for API calls that already return `ExceptionalResponse`:
+
+```java
+import org.dempsay.utils.exceptional.api.ExceptionalSupplier;
+import org.dempsay.utils.exceptional.api.ExceptionalResponse;
+
+// Chain to API methods that return ExceptionalResponse
+ExceptionalResponse<Integer> result = ExceptionalSupplier.of(() -> "123")
+    .execute()
+    .chain(this::parseNumber);  // parseNumber returns ExceptionalResponse<Integer>
+
+public ExceptionalResponse<Integer> parseNumber(String s, ExceptionalListener errorHandler) {
+    return ExceptionalSupplier.of(() -> Integer.parseInt(s))
+        .with(errorHandler)
+        .execute();
+}
+```
+
+#### ExceptionalListener First Parameter Pattern
+
+**Important**: For API-style chaining, the `ExceptionalListener` is placed as the **first parameter** instead of the last. This enables varargs patterns:
+
+```java
+// Listener first enables cleaner varargs usage
+public ExceptionalResponse<Integer> parseNumber(Exception... errors) {
+    ExceptionalListener listener = errors.length > 0 ? errors[0] : null;
+    return ExceptionalSupplier.of(() -> Integer.parseInt(input))
+        .with(listener)
+        .execute();
+}
+```
+
+This pattern change applies to:
+- `then()` overloads with listeners
+- `chain()` methods
+- The new functional interfaces (`ExceptionalChainCall`, `ExceptionalChainListenenerCall`, `ExceptionalChainListenenerInvertedCall`)
 
 ## When to Use Exceptional
 

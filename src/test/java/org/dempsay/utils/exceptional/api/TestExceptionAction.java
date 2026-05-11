@@ -42,4 +42,24 @@ public class TestExceptionAction {
         assertTrue(caughtException.get() instanceof IllegalStateException, "Got an illegal state exception");
         assertEquals("Error for this test", caughtException.get().getMessage(), "Got the correct message");
     }
+
+    @Test
+    public void testAlwaysOnSuccess() {
+        AtomicReference<Boolean> alwaysCalled = new AtomicReference<>(false);
+        var action = ExceptionalAction.of(() -> { })
+            .always(() -> alwaysCalled.set(true));
+        assertTrue(action.execute());
+        assertTrue(alwaysCalled.get(), "always() was called on success");
+    }
+
+    @Test
+    public void testAlwaysOnFailure() {
+        AtomicReference<Boolean> alwaysCalled = new AtomicReference<>(false);
+        var action = ExceptionalAction.of(() -> {
+                throw new IllegalStateException("Test failure");
+            })
+            .always(() -> alwaysCalled.set(true));
+        assertFalse(action.execute());
+        assertTrue(alwaysCalled.get(), "always() was called on failure");
+    }
 }
