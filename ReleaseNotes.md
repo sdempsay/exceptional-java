@@ -1,5 +1,15 @@
 # Release Notes
 
+## Version 1.0.9
+
+### Null-Safety Annotations
+- Added `org.jetbrains:annotations` dependency (provided scope) for IDE null-safety
+- `@NotNull` on `ExceptionalFunction.execute()`, `ExceptionalFunctionCall.apply()`, `ExceptionalSupplier.success()` boundary points
+- `@SuppressWarnings("null")` on `ExceptionalResponse.failure()`, `then()`, `ExceptionalResource.execute()` where free type variables can't prove non-null to JDT flow analysis
+- `ExceptionalResponse.success()` handles null gracefully — returns failure response instead of requiring `@NotNull` annotation
+
+---
+
 ## Version 1.0.7
 
 ### New Features
