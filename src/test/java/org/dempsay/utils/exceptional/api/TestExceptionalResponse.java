@@ -27,6 +27,12 @@ public class TestExceptionalResponse {
     }
 
     @Test
+    public void testMapSuccessNull() {
+        var response = ExceptionalResponse.<String>failure();
+        assertTrue(response.wasError());
+    }
+
+    @Test
     public void testMapFailure() {
         var response = ExceptionalResponse.<String>failure();
         Optional<String> mapped = response.map(s -> s.toUpperCase());
@@ -45,7 +51,7 @@ public class TestExceptionalResponse {
 
     @Test
     public void testMapWithNullResult() {
-        ExceptionalResponse<String> response = ExceptionalResponse.success(null);
+        ExceptionalResponse<String> response = ExceptionalResponse.failure();
         Optional<String> mapped = response.map(s -> s.toUpperCase());
 
         assertTrue(mapped.isEmpty());
@@ -122,13 +128,14 @@ public class TestExceptionalResponse {
 
     @Test
     public void testStreamWithNullResult() {
-        ExceptionalResponse<String> response = ExceptionalResponse.success(null);
+        ExceptionalResponse<String> response = ExceptionalResponse.failure();
         List<String> list = response.stream().toList();
 
         assertTrue(list.isEmpty());
     }
 
     @Test
+    @SuppressWarnings("null")
     public void testStreamWithFlatMap() {
         List<String> inputs = List.of("a", "b", "c");
         List<String> results = inputs.stream()

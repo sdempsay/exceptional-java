@@ -1,5 +1,7 @@
 package org.dempsay.utils.exceptional.api;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Prototype for an exception function
  *
@@ -16,5 +18,5 @@ public interface ExceptionalFunctionCall<T,R> {
      * @throws Exception if an error occurs
      * @since 1.0.0
      */
-    R apply(T t) throws Exception;
+    R apply(@NotNull T t) throws Exception;
 }

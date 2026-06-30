@@ -2,6 +2,8 @@ package org.dempsay.utils.exceptional.api;
 
 import java.util.Objects;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Utility class for executing functions
  *
@@ -50,10 +52,14 @@ public final class ExceptionalFunction<T,R> {
      * @since 1.0.0
      */
     @SuppressWarnings("checkstyle:illegalcatch")
-    public ExceptionalResponse<R> execute(final T input) {
+    public ExceptionalResponse<R> execute(@NotNull final T input) {
         try {
             R response = this.exceptionalFunction.apply(input);
-            return ExceptionalResponse.success(response);
+            if (Objects.isNull(response)) {
+                return ExceptionalResponse.failure();
+             } else {
+                return ExceptionalResponse.success(response);
+            }
         } catch (Exception e) {
             if (Objects.nonNull(this.exceptionalListener)) {
                 exceptionalListener.onError(e);

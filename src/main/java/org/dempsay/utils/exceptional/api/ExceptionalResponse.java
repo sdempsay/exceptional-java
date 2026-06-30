@@ -6,6 +6,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Wrapper for handling responses
  *
@@ -45,17 +47,17 @@ public record ExceptionalResponse<R>(R response, boolean wasError) {
      * @return new ExceptionalResponse with the result of next, or failure if any step failed
      * @since 1.0.3
      */
+    @SuppressWarnings("null")
     public <N> ExceptionalResponse<N> then(final ExceptionalFunctionCall<R,N> next, final ExceptionalListener exceptionalListener) {
-        if (this.wasError) {
+        if (this.wasError || Objects.isNull(this.response)) {
             return ExceptionalResponse.failure();
+        } else {
+            var nextCall = ExceptionalFunction.of(next);
+            if (Objects.nonNull(exceptionalListener)) {
+                nextCall.with(exceptionalListener);
+            }
+            return nextCall.execute(this.response);
         }
-
-        var nextCall = ExceptionalFunction.of(next);
-        if (Objects.nonNull(exceptionalListener)) {
-            nextCall.with(exceptionalListener);
-        }
-
-        return nextCall.execute(this.response);
     }
 
     /**
@@ -66,7 +68,9 @@ public record ExceptionalResponse<R>(R response, boolean wasError) {
      * @since 1.0.3
      */
     public <N> ExceptionalResponse<N> then(final ExceptionalFunctionCall<R,N> next) {
-        return then(next, null);
+        return this.wasError || Objects.isNull(this.response)
+            ? ExceptionalResponse.failure()
+            : then(next, null);
     }
 
     /**
@@ -162,13 +166,13 @@ public record ExceptionalResponse<R>(R response, boolean wasError) {
     /**
      * Creates a successful response with the given result.
      *
-     * @param result the successful result
+     * @param result the successful result (must be non-null)
      * @return ExceptionalResponse with wasError = false
      * @since 1.0.0
      */
-    public static <R> ExceptionalResponse<R> success(final R result) {
+    public static <R> ExceptionalResponse<R> success(@NotNull final R result) {
         return new ExceptionalResponse<R>(result, false);
-    }
+      }
 
     /**
      * Creates a failure response.
@@ -176,6 +180,7 @@ public record ExceptionalResponse<R>(R response, boolean wasError) {
      * @return ExceptionalResponse with null response and wasError = true
      * @since 1.0.0
      */
+    @SuppressWarnings("null")
     public static <R> ExceptionalResponse<R> failure() {
         return new ExceptionalResponse<R>(null, true);
     }
