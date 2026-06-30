@@ -54,11 +54,18 @@ public final class ExceptionalResource<T extends AutoCloseable, R> {
      * @return ExceptionalResponse.success(result) on success, ExceptionalResponse.failure() on exception
      * @since 1.0.0
      */
-    @SuppressWarnings("checkstyle:illegalcatch")
+    @SuppressWarnings({"checkstyle:illegalcatch", "null"})
     public ExceptionalResponse<R> execute() {
         try (T resource = this.resourceSupplier.supply()) {
+            if (Objects.isNull(resource)) {
+                return ExceptionalResponse.failure();
+            }
             R result = this.resourceUsage.apply(resource);
-            return ExceptionalResponse.success(result);
+            if (Objects.isNull(result)) {
+                return ExceptionalResponse.failure();
+            } else {
+                return ExceptionalResponse.success(result);
+            }
         } catch (Exception e) {
             if (Objects.nonNull(this.exceptionalListener)) {
                 this.exceptionalListener.onError(e);

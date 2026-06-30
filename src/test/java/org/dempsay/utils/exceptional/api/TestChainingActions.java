@@ -61,6 +61,7 @@ public class TestChainingActions {
             .execute();
     }
 
+    @SuppressWarnings("null")
     public ExceptionalResponse<Integer> convertString(final ExceptionalListener onError, final String s) {    
         ExceptionalResponse<Integer> ret = ExceptionalFunction.of(this::fromString)
             .with(onError)

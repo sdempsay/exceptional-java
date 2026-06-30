@@ -52,7 +52,11 @@ public final class ExceptionalSupplier<R> {
     public ExceptionalResponse<R> execute() {
         try {
             R response = this.exceptionalSupplier.supply();
-            return ExceptionalResponse.success(response);
+            if (Objects.isNull(response)) {
+                return ExceptionalResponse.failure();
+            } else {
+                return ExceptionalResponse.success(response);
+            }
         } catch (Exception e) {
             if (Objects.nonNull(this.exceptionalListener)) {
                 exceptionalListener.onError(e);
