@@ -1,6 +1,6 @@
 # Release Notes
 
-## Version 1.1.0
+## Version 1.0.9
 
 ### Null-Safety Annotations
 - Added `org.jetbrains:annotations` dependency (provided scope) for IDE null-safety
