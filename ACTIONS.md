@@ -1,6 +1,6 @@
 # Actions Log
 
-- 2026-06-30: Added JetBrains `@NotNull`/`@Nullable` annotations (provided scope) for null-safety. `@SuppressWarnings("null")` on `ExceptionalResource.execute()` for free type variable issue with `@NotNull` on `ExceptionalFunctionCall.apply()`.
+- 2026-06-30: Added JetBrains `@NotNull`/`@Nullable` annotations (provided scope) for null-safety. `ExceptionalResponse.success()` handles null inline (returns failure) instead of `@NotNull`. `@SuppressWarnings("null")` on `ExceptionalResource.execute()` for free type variable issue with `@NotNull` on `ExceptionalFunctionCall.apply()`.
 - 2026-05-11: Added `always()` method to all Exceptional classes (`ExceptionalSupplier`, `ExceptionalFunction`, `ExceptionalAction`, `ExceptionalResource`) - runs a Runnable in finally block regardless of success/failure, added unit tests
 - 2026-05-11: Added `chain()` method to `ExceptionalResponse` for API-style chaining where each step returns ExceptionalResponse directly, added functional interfaces `ExceptionalChainCall`, `ExceptionalChainListenenerCall`, `ExceptionalChainListenenerInvertedCall`
 - 2026-05-11: Implemented ExceptionalListener first parameter pattern for chaining methods to enable varargs support in API methods

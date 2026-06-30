@@ -6,8 +6,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Wrapper for handling responses
  *
@@ -170,8 +168,10 @@ public record ExceptionalResponse<R>(R response, boolean wasError) {
      * @return ExceptionalResponse with wasError = false
      * @since 1.0.0
      */
-    public static <R> ExceptionalResponse<R> success(@NotNull final R result) {
-        return new ExceptionalResponse<R>(result, false);
+    public static <R> ExceptionalResponse<R> success(final R result) {
+        return Objects.nonNull(result)
+            ? new ExceptionalResponse<R>(result, false)
+            : new ExceptionalResponse<R>(result, true);
       }
 
     /**
