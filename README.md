@@ -193,3 +193,5 @@ Exceptional makes that easy. It makes failure visible. It makes your code readab
 ---
 
 For more details, check out [WhyBeExceptional.md](./WhyBeExceptional.md) - the technical deep dive.
+
+Licensed under the [MIT License](LICENSE).
