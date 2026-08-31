@@ -192,6 +192,17 @@ Exceptional makes that easy. It makes failure visible. It makes your code readab
 
 ---
 
+## Axiom catalog
+
+`mvn verify` attaches `classifier=agent-catalog` (and an examples zip) from
+`src/main/resources/agent-catalog/`. After `mvn deploy`, tell a reachable
+`axiom-mcp` about this GAV (GitHub Actions cannot POST to a laptop):
+
+```bash
+bin/post-catalog.sh
+# or: java -jar axiom-mcp-server.jar catalog add org.dempsay.utils:exceptional:VERSION
+```
+
 For more details, check out [WhyBeExceptional.md](./WhyBeExceptional.md) - the technical deep dive.
 
 Licensed under the [MIT License](LICENSE).

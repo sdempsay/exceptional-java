@@ -78,6 +78,21 @@
           </archive>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.dempsay.axiom</groupId>
+        <artifactId>axiom-maven-plugin</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>catalog</goal>
+            </goals>
+            <configuration>
+              <required>true</required>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>
