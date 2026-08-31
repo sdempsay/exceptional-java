@@ -1,5 +1,6 @@
 # Actions Log
 
+- 2026-08-31: Axiom catalog (`external_failure`): `src/main/resources/agent-catalog/catalog.yaml` plus primary `of`+`execute` and secondary `chain` snippets. `axiom-maven-plugin` bound with `required=true`. After `mvn deploy`, POST the GAV with `bin/post-catalog.sh` (or `axiom-mcp catalog add g:a:v`) to a reachable axiom-mcp. Latest tag is `1.0.9` so this SNAPSHOT stays `1.1.0-SNAPSHOT`; new `@since` would be `1.0.10`.
 - 2026-06-30: Added JetBrains `@NotNull`/`@Nullable` annotations (provided scope) for null-safety. `ExceptionalResponse.success()` handles null inline (returns failure) instead of `@NotNull`. `@SuppressWarnings("null")` on `ExceptionalResource.execute()` for free type variable issue with `@NotNull` on `ExceptionalFunctionCall.apply()`.
 - 2026-05-11: Added `always()` method to all Exceptional classes (`ExceptionalSupplier`, `ExceptionalFunction`, `ExceptionalAction`, `ExceptionalResource`) - runs a Runnable in finally block regardless of success/failure, added unit tests
 - 2026-05-11: Added `chain()` method to `ExceptionalResponse` for API-style chaining where each step returns ExceptionalResponse directly, added functional interfaces `ExceptionalChainCall`, `ExceptionalChainListenenerCall`, `ExceptionalChainListenenerInvertedCall`
