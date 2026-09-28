@@ -25,14 +25,17 @@ if (response.wasNoError()) {
 }
 ```
 
-## Versioning (from git tags)
+## Versioning (`@since` and SNAPSHOT)
 
-Read the **latest tag**, not the SNAPSHOT in the POM.
+SNAPSHOT minor is one ahead of the release line. This repo is `1.1.0-SNAPSHOT` (tracks `1.0.x`). Never use the POM SNAPSHOT as `@since`. Test classes do not need `@since`.
 
-- **Maven SNAPSHOT** after tag `x.y.z` is `x.(y+1).0-SNAPSHOT` (always ends in `.0`).
-- **Javadoc `@since`** for new APIs is `x.y.(z+1)` from that same tag.
+1. `git tag --sort=-v:refname | head -5`
+2. POM e.g. `1.1.0-SNAPSHOT` → release line `1.0`
+3. Latest tag on that line (e.g. `1.0.12`)
+4. `@since` = that tag + 1 patch (`1.0.13`)
+5. No tags on the line yet → `1.(x-1).0`
 
-Example: tag `1.0.9` → POM `1.1.0-SNAPSHOT`, new `@since 1.0.10`.
+Current: latest `1.0` tag `1.0.9` → `@since 1.0.10`.
 
 ## Notes
 - Parent POM: `org.dempsay.maven:dempsay-parent:1.0.4`
